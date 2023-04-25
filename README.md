@@ -65,6 +65,21 @@ Try the Colab here using [![Open In Colab](https://colab.research.google.com/ass
 
 ## Installation
 
+First upgrade your cuda and cudnn versions to the latest ones.
+
+```
+instructions can be found here https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
+```
+
+
+Install jax
+```
+pip install --upgrade pip
+
+pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+```
+
+
 Install dependencies:
 
 ```

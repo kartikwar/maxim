@@ -1,1 +1,5 @@
 *.npz
+maxim-env/
+maxim/images/Results/
+build/
+maxim.egg-info/
