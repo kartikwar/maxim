@@ -3,3 +3,8 @@ maxim-env/
 maxim/images/Results/
 build/
 maxim.egg-info/
+maxim/images/vtracer/
+maxim/images/vtracer_results/
+.vscode/
+maxim/images/results/
+maxim-cuda11-env/

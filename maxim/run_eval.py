@@ -37,7 +37,7 @@ flags.DEFINE_enum(
 flags.DEFINE_string('ckpt_path', '', 'Path to checkpoint.')
 flags.DEFINE_string('input_dir', '', 'Input dir to the test set.')
 flags.DEFINE_string('output_dir', '', 'Output dir to store predicted images.')
-flags.DEFINE_boolean('has_target', True, 'Whether has corresponding gt image.')
+flags.DEFINE_boolean('has_target', False, 'Whether has corresponding gt image.')
 flags.DEFINE_boolean('save_images', True, 'Dump predicted images.')
 flags.DEFINE_boolean('geometric_ensemble', False,
                      'Whether use ensemble infernce.')
@@ -344,11 +344,17 @@ def main(_):
   model = model_mod.Model(**model_configs)
 
   psnr_all = []
+  
+  def _resize_file(img):
+      max_size = (1280, 1280)
+      img.thumbnail(max_size)
+      return img
 
   def _process_file(i):
     print(f'Processing {i + 1} / {num_images}...')
     input_file = input_filenames[i]
-    input_img = np.asarray(Image.open(input_file).convert('RGB'),
+    print(input_file)
+    input_img = np.asarray(_resize_file(Image.open(input_file)).convert('RGB'),
                            np.float32) / 255.
     if FLAGS.has_target:
       target_file = target_filenames[i]
@@ -357,6 +363,7 @@ def main(_):
 
     # Padding images to have even shapes
     height, width = input_img.shape[0], input_img.shape[1]
+    print(height, width)
     input_img = make_shape_even(input_img)
     height_even, width_even = input_img.shape[0], input_img.shape[1]
 
@@ -406,9 +413,12 @@ def main(_):
     return psnr
 
   for i in range(num_images):
+    st = time.time()
     psnr = _process_file(i)
     psnr_all.append(psnr)
-
+    et = time.time()
+    print('time taken is {}'.format(et - st))
+    
   psnr_all = np.asarray(psnr_all)
 
   print(f'average psnr = {np.sum(psnr_all)/num_images:.4f}')
@@ -416,4 +426,8 @@ def main(_):
 
 
 if __name__ == '__main__':
+  import time
+  s_t = time.time()
   app.run(main)
+  e_t = time.time()
+  print('total time taken is {}'. format(e_t- s_t))
